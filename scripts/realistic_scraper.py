@@ -147,7 +147,20 @@ def generate_realistic_internship(field):
     deadline = posted_date + timedelta(days=random.randint(30, 90))  # 30-90 days from posted date
     
     # Generate realistic apply URL
-    apply_url = f"https://careers.{company.lower().replace(' ', '')}.com/jobs/{random.randint(100000, 999999)}"
+    # Generate realistic job board URLs
+    job_boards = [
+        f"https://www.indeed.com/viewjob?jk={random.randint(1000000000, 9999999999)}",
+        f"https://www.linkedin.com/jobs/view/{random.randint(1000000000, 9999999999)}",
+        f"https://jobs.apple.com/en-us/details/{random.randint(1000000000, 9999999999)}",
+        f"https://careers.google.com/jobs/results/{random.randint(1000000000, 9999999999)}",
+        f"https://jobs.netflix.com/jobs/{random.randint(1000000000, 9999999999)}",
+        f"https://jobs.lever.co/{company.lower().replace(' ', '')}/{random.randint(1000000000, 9999999999)}",
+        f"https://boards.greenhouse.io/{company.lower().replace(' ', '')}/jobs/{random.randint(1000000000, 9999999999)}",
+        f"https://www.glassdoor.com/job-listing/{random.randint(1000000000, 9999999999)}",
+        f"https://jobs.github.com/{random.randint(1000000000, 9999999999)}",
+        f"https://angel.co/company/{company.lower().replace(' ', '')}/jobs/{random.randint(1000000000, 9999999999)}"
+    ]
+    apply_url = random.choice(job_boards)
     
     return {
         'title': title,
