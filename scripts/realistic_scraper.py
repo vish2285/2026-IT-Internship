@@ -146,21 +146,20 @@ def generate_realistic_internship(field):
     posted_date = date.today() - timedelta(days=random.randint(0, 7))  # Posted within last week
     deadline = posted_date + timedelta(days=random.randint(30, 90))  # 30-90 days from posted date
     
-    # Generate realistic apply URL
-    # Generate realistic job board URLs
-    job_boards = [
-        f"https://www.indeed.com/viewjob?jk={random.randint(1000000000, 9999999999)}",
-        f"https://www.linkedin.com/jobs/view/{random.randint(1000000000, 9999999999)}",
-        f"https://jobs.apple.com/en-us/details/{random.randint(1000000000, 9999999999)}",
-        f"https://careers.google.com/jobs/results/{random.randint(1000000000, 9999999999)}",
-        f"https://jobs.netflix.com/jobs/{random.randint(1000000000, 9999999999)}",
-        f"https://jobs.lever.co/{company.lower().replace(' ', '')}/{random.randint(1000000000, 9999999999)}",
-        f"https://boards.greenhouse.io/{company.lower().replace(' ', '')}/jobs/{random.randint(1000000000, 9999999999)}",
-        f"https://www.glassdoor.com/job-listing/{random.randint(1000000000, 9999999999)}",
-        f"https://jobs.github.com/{random.randint(1000000000, 9999999999)}",
-        f"https://angel.co/company/{company.lower().replace(' ', '')}/jobs/{random.randint(1000000000, 9999999999)}"
+    # Generate realistic apply URL - use actual job search pages
+    job_search_pages = [
+        f"https://www.indeed.com/jobs?q={field.lower()}+intern&l={location.split(',')[0].replace(' ', '+')}",
+        f"https://www.linkedin.com/jobs/search/?keywords={field.lower()}+intern&location={location.split(',')[0].replace(' ', '%20')}",
+        f"https://www.glassdoor.com/Job/jobs.htm?sc.keyword={field.lower()}+intern&locT=C&locId={random.randint(1, 100)}",
+        f"https://jobs.apple.com/en-us/search?search={field.lower()}+intern",
+        f"https://careers.google.com/jobs/results/?q={field.lower()}+intern",
+        f"https://jobs.netflix.com/search?q={field.lower()}+intern",
+        f"https://www.ziprecruiter.com/jobs-search?search={field.lower()}+intern&location={location.split(',')[0].replace(' ', '+')}",
+        f"https://angel.co/jobs#find/f!%7B%22types%22%3A%5B%22full-time%22%5D%2C%22roles%22%3A%5B%22intern%22%5D%2C%22keywords%22%3A%5B%22{field.lower()}%22%5D%7D",
+        f"https://www.simplyhired.com/search?q={field.lower()}+intern&l={location.split(',')[0].replace(' ', '+')}",
+        f"https://www.monster.com/jobs/search/?q={field.lower()}+intern&where={location.split(',')[0].replace(' ', '+')}"
     ]
-    apply_url = random.choice(job_boards)
+    apply_url = random.choice(job_search_pages)
     
     return {
         'title': title,

@@ -32,21 +32,24 @@ def get_db():
     finally:
         db.close()
 
-def generate_realistic_url(company):
-    """Generate realistic job board URLs"""
-    job_boards = [
-        f"https://www.indeed.com/viewjob?jk={random.randint(1000000000, 9999999999)}",
-        f"https://www.linkedin.com/jobs/view/{random.randint(1000000000, 9999999999)}",
-        f"https://jobs.apple.com/en-us/details/{random.randint(1000000000, 9999999999)}",
-        f"https://careers.google.com/jobs/results/{random.randint(1000000000, 9999999999)}",
-        f"https://jobs.netflix.com/jobs/{random.randint(1000000000, 9999999999)}",
-        f"https://jobs.lever.co/{company.lower().replace(' ', '')}/{random.randint(1000000000, 9999999999)}",
-        f"https://boards.greenhouse.io/{company.lower().replace(' ', '')}/jobs/{random.randint(1000000000, 9999999999)}",
-        f"https://www.glassdoor.com/job-listing/{random.randint(1000000000, 9999999999)}",
-        f"https://jobs.github.com/{random.randint(1000000000, 9999999999)}",
-        f"https://angel.co/company/{company.lower().replace(' ', '')}/jobs/{random.randint(1000000000, 9999999999)}"
+def generate_realistic_url(internship):
+    """Generate realistic job search URLs that actually work"""
+    field = internship.field.lower()
+    location = internship.location.split(',')[0].replace(' ', '+')
+    
+    job_search_pages = [
+        f"https://www.indeed.com/jobs?q={field}+intern&l={location}",
+        f"https://www.linkedin.com/jobs/search/?keywords={field}+intern&location={location.replace('+', '%20')}",
+        f"https://www.glassdoor.com/Job/jobs.htm?sc.keyword={field}+intern&locT=C&locId={random.randint(1, 100)}",
+        f"https://jobs.apple.com/en-us/search?search={field}+intern",
+        f"https://careers.google.com/jobs/results/?q={field}+intern",
+        f"https://jobs.netflix.com/search?q={field}+intern",
+        f"https://www.ziprecruiter.com/jobs-search?search={field}+intern&location={location}",
+        f"https://www.simplyhired.com/search?q={field}+intern&l={location}",
+        f"https://www.monster.com/jobs/search/?q={field}+intern&where={location}",
+        f"https://www.dice.com/jobs?q={field}+intern&location={location}"
     ]
-    return random.choice(job_boards)
+    return random.choice(job_search_pages)
 
 def fix_apply_urls():
     """Update all internships with realistic apply URLs"""
@@ -61,7 +64,7 @@ def fix_apply_urls():
         updated_count = 0
         for internship in internships:
             # Generate new realistic URL
-            new_url = generate_realistic_url(internship.company)
+            new_url = generate_realistic_url(internship)
             internship.apply_url = new_url
             updated_count += 1
             print(f"✅ Updated: {internship.title} at {internship.company}")
