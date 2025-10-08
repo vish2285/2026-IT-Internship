@@ -1,0 +1,63 @@
+name: Update README with Internships
+
+on:
+  schedule:
+    # Run every 2 hours to keep internships fresh
+    - cron: '0 */2 * * *'
+  workflow_dispatch: # Allow manual triggering
+  push:
+    paths:
+      - 'backend/app/**'
+      - 'scripts/**'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests python-dotenv beautifulsoup4 psycopg2-binary
+
+    - name: Run Scraper Every 2 Hours
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        API_URL: ${{ secrets.API_URL || 'http://localhost:8000' }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python scripts/realistic_scraper.py
+
+    - name: Check for changes
+      id: verify-changed-files
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "changed=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and push changes
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md
+        git commit -m "🤖 Auto-update README with latest internships [skip ci]"
+        git push
+
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "README update failed. Check the logs for details."
