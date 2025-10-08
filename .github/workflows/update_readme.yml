@@ -31,13 +31,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests python-dotenv beautifulsoup4 psycopg2-binary
 
-    - name: Run Scraper Every 2 Hours
+    - name: Run Real Job Scraper Every 6 Hours
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
         API_URL: ${{ secrets.API_URL || 'http://localhost:8000' }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        python scripts/realistic_scraper.py
+        python scripts/real_job_scraper.py
 
     - name: Check for changes
       id: verify-changed-files
